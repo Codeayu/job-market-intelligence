@@ -1,4 +1,5 @@
 import psycopg
+from src.config.logger import logger
 
 from src.config.settings import (
     DB_HOST,
@@ -19,12 +20,11 @@ def get_connection():
             password=DB_PASSWORD
         )
 
-        #print("✅ Database connected successfully!")
+        logger.info("Database connected successfully")
 
         return connection
 
     except psycopg.Error as e:
-        print("❌ Database connection failed!")
-        print(e)
+        logger.error("Database connection failed: %s", e)
 
         return None

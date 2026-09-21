@@ -14,4 +14,4 @@ console_handler.setFormatter(formatter)
 
 logger.addHandler(console_handler)
 
-logger.info("Logger is Working!")
+#logger.info("Logger is Working!")
