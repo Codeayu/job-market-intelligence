@@ -18,6 +18,7 @@ def save_products(connection, products):
     """
 
     try:
+        count = 0
         for product in products:
             cursor.execute(
                 insert_query,
@@ -29,12 +30,13 @@ def save_products(connection, products):
                     product["category"]
                 )
             )
+            count += 1
 
         connection.commit()
 
-        logger.info("Successfully saved products")
+        #logger.info("Successfully saved products")
 
-        return True
+        return count
 
     except psycopg.Error as e:
         connection.rollback()

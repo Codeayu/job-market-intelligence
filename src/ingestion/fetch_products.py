@@ -17,6 +17,7 @@ def fetch_products():
         #logger.info("Fetched %d products", len(products))
 
         return products
+        #return []
 
     except req.exceptions.RequestException as e:
         logger.error("Unable to fetch products: %s", e)
