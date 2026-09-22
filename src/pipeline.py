@@ -2,33 +2,43 @@ from src.ingestion.fetch_products import fetch_products
 from src.transformation.clean_products import clean_products
 from src.database.connection import get_connection
 from src.database.save_products import save_products
+from src.validation.validate_products import validate_products
+from src.config.logger import logger
 
 
 def run_pipeline():
     #fetching
     products = fetch_products()
-    print(f"📥 Fetched {len(products)} products")
+    logger.info("Fetched %d products", len(products))
 
     #Cleaning
     cleaned_products = clean_products(products)
-    print(f"🧹 Cleaned {len(cleaned_products)} products")
+    logger.info("Cleaned %d products", len(cleaned_products))
 
+
+    #Validation Error
+    valid_products, invalid_products = validate_products(cleaned_products)
+    logger.info("Valid products: %d", len(valid_products))
+    logger.warning("Invalid products: %d", len(invalid_products))  
+
+
+    connection = None
     #Database connection
     try:
         # Database connection
         connection = get_connection()
 
         if connection is None:
-            print("❌ Pipeline stopped: database connection failed.")
+            logger.error("Pipeline stopped: database connection failed")
             return
 
         # Saving
-        saved = save_products(connection, cleaned_products)
+        saved = save_products(connection, valid_products)
 
         if saved:
-            print("💾 Products saved successfully!")
+            logger.info("Products saved successfully")
         else:
-            print("⚠️ Products were not saved.")
+            logger.warning("Products were not saved")
 
     finally:
         if connection:
